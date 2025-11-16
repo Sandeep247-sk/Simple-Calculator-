@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Private Link Card Creator</title>
+    <style>
+    body {
+        font-family: Poppins, Arial, sans-serif;
+        background: linear-gradient(120deg, #74ebd5, #ACB6E5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 30px;
+        margin: 0;
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .login, .app {
+        background: #fff;
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 320px;
+        transition: opacity 0.3s ease;
+    }
+
+    input[type="password"], input[type="text"], input[type="file"] {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        outline: none;
+    }
+
+    button {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: #45a049;
+    }
+
+    .cards {
+        margin-top: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        overflow: hidden;
+        width: 250px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .card button {
+        width: 100%;
+        border-radius: 0 0 15px 15px;
+        background: #007bff;
+    }
+
+    .card button:hover {
+        background: #0056b3;
+    }
+    </style>
+</head>
+<body>
+
+    <h1>🔒 Private Link Card Creator</h1>
+
+    <div class="login" id="loginPage">
+    <input type="password" id="passwordInput" placeholder="Enter password">
+    <button id="loginBtn">Login</button>
+    <p id="loginMsg" style="color:red; display:none;">Incorrect password!</p>
+    </div>
+
+    <div class="app" id="appPage" style="display:none;">
+    <input type="text" id="linkInput" placeholder="Enter webpage link" />
+    <input type="file" id="imageInput" accept="image/*" />
+    <button id="createBtn">Create Card</button>
+    </div>
+
+    <div class="cards" id="cardContainer"></div>
+
+    <script>
+    const loginPage = document.getElementById('loginPage');
+    const appPage = document.getElementById('appPage');
+    const loginBtn = document.getElementById('loginBtn');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginMsg = document.getElementById('loginMsg');
+
+    const SECRET_PASSWORD = "sandeep123";
+
+    loginPage.style.display = "flex";
+    appPage.style.display = "none";
+
+    loginBtn.addEventListener('click', () => {
+        const input = passwordInput.value.trim();
+        if (input === SECRET_PASSWORD) {
+        loginPage.style.display = "none";
+        appPage.style.display = "flex";
+        } else {
+        loginMsg.style.display = "block";
+        }
+    });
+
+    const linkInput = document.getElementById('linkInput');
+    const imageInput = document.getElementById('imageInput');
+    const createBtn = document.getElementById('createBtn');
+    const cardContainer = document.getElementById('cardContainer');
+
+    createBtn.addEventListener('click', () => {
+        const link = linkInput.value.trim();
+        const file = imageInput.files[0];
+
+        if (!link || !file) {
+        alert("Please enter a link and select an image.");
+        return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+        const card = document.createElement('div');
+        card.classList.add('card');
+
+        card.innerHTML = `
+            <img src="${e.target.result}" alt="Website Image">
+            <button onclick="window.open('${link}', '_blank')">Visit Website</button>
+        `;
+
+        cardContainer.appendChild(card);
+        };
+        reader.readAsDataURL(file);
+
+        linkInput.value = "";
+        imageInput.value = "";
+    });
+    </script>
+</body>
+</html>
